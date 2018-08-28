@@ -1,12 +1,57 @@
 import empleados.*
 
-test "sueldo de Baigorria y de Gimenez" {
-	baigorria.venderEmpanada()
-	baigorria.venderEmpanada()
-	assert.equals(1530, baigorria.sueldo())
-	baigorria.venderEmpanada()
-	assert.equals(1545, baigorria.sueldo())
-	assert.equals(15000, gimenez.sueldo())
-	gimenez.sueldo(12000)
-	assert.equals(12000, gimenez.sueldo())
+/*Baigorria arranca con 15000 de sueldo, deuda en 0, dinero en 0.
+ * 1 Baigorria gasta 4000, totalDeuda() debe ser 4000, totalDinero() debe ser 0.
+ * 2 Baigorria gasta otros 8000, totalDeuda() pasa a 12000, totalDinero() sigue en 0.
+ * 3 Baigorria cobra, con los 15000 que recibe paga toda su deuda y le sobran 3000 pesos. Por lo tanto, totalDeuda() debe ser 0, y totalDinero() debe ser 3000.
+ * 4 Baigorria gasta 25000, cubre 3000 con el dinero que tiene, el resto es deuda. totalDeuda() queda en 22000, totalDinero() en 0.
+ 5 Baigorria cobra, tiene que dedicar los 15000 a pagar deudas, y no le alcanza. Ahora, totalDeuda() pasa a 7000, y totalDinero() a 0. */
+describe "manejo fino de las finanzas de baigorria" {
+
+	test "arranca sin deuda y sin dinero, sueldo 15000" {
+		assert.equals(15000, baigorria.sueldo())
+		assert.equals(0, baigorria.totalDeuda())
+		assert.equals(0, baigorria.totalDinero())
+	}
+
+	test "gasta 4000" {
+		baigorria.gastar(4000)
+		assert.equals(4000, baigorria.totalDeuda())
+		assert.equals(0, baigorria.totalDinero())
+	}
+
+	test "gasta 8000 mas" {
+		baigorria.gastar(4000)
+		baigorria.gastar(8000)
+		assert.equals(12000, baigorria.totalDeuda())
+	}
+
+	test "cobra y paga la deuda" {
+		baigorria.gastar(4000)
+		baigorria.gastar(8000)
+		baigorria.cobrarSueldo()
+		assert.equals(0, baigorria.totalDeuda())
+		assert.equals(3000, baigorria.totalDinero())
+	}
+
+	test "gasta 25000, aumenta la deuda y queda sin plata" {
+		baigorria.gastar(4000)
+		baigorria.gastar(8000)
+		baigorria.cobrarSueldo()
+		baigorria.gastar(25000)
+		assert.equals(22000, baigorria.totalDeuda())
+		assert.equals(0, baigorria.totalDinero())
+	}
+
+	test "baigorria cobra y paga un porcentaje de sus deudas" {
+		baigorria.gastar(4000)
+		baigorria.gastar(8000)
+		baigorria.cobrarSueldo()
+		baigorria.gastar(25000)
+		baigorria.cobrarSueldo()
+		assert.equals(0, baigorria.totalDinero())
+		assert.equals(7000, baigorria.totalDeuda())
+	}
+
 }
+
