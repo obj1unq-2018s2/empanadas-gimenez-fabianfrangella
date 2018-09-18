@@ -40,17 +40,21 @@ object baigorria {
 	method cobrarSueldo() {
 		if (self.sueldo() > deuda) {
 			caja += self.sueldo() - deuda
+			
+			// TODO Mucho más fácil y claro sería hacer deuda = 0.
 			deuda -= deuda
 		} else {
 			deuda -= self.sueldo()
 		}
 	}
 
+	// TODO Hay lógica repetida entre cobrarSueldo y gastar, ¿cómo podría evitarse esto?
 	method gastar(cuanto) {
 		if (caja > cuanto) {
 			caja -= cuanto
 		} else {
 			deuda += cuanto - caja
+			// TODO No, hacé caja = 0
 			caja -= caja
 		}
 	}
